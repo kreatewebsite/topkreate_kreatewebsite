@@ -1,0 +1,24 @@
+
+
+name: My Workflow
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Zip Code
+        run: zip -r code.zip .
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: code
+          path: code.zip
