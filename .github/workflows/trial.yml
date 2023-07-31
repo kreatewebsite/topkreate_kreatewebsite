@@ -1,39 +1,30 @@
+name: PPTX to Images Conversion
+
 on:
   push:
     branches:
       - main
-   
+
 jobs:
-  get_ppt_name:
+  convert_to_images:
     runs-on: ubuntu-latest
 
-    outputs:
-      ppt_name: ${{ steps.get_ppt_name.outputs.ppt_names }}
-
     steps:
-      - name: Checkout Repository
+      - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Get PPT File Name
-        id: get_ppt_name
+      - name: Install Dependencies
         run: |
-          ppt_file=$(find . -name "*.pptx")
-          ppt_name=$(basename "$ppt_file" .pptx)
-          echo "Output of this $ppt_name"
+          sudo apt-get update 
+          sudo apt-get install -y poppler-utils libreoffice
 
-          # Export the variable so that it can be used in subsequent steps and jobs
-          echo "ppt_names=$ppt_name" >> $GITHUB_OUTPUT
+      - name: Find PPTX Files
+        id: find_pptx_files
+        run: |
+          find input/content -name "*.pptx" -type f > pptx_files.txt
+          cat pptx_files.txt
+          ls -a
           
-            
-  convert_ppt_to_pdf:
-    runs-on: ubuntu-latest
-    needs: get_ppt_name
-    
-    
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-        
       - name: Get Repository Name
         id: get_repo_name
         run: |
@@ -41,75 +32,75 @@ jobs:
           REPO_NAME=$(basename $GITHUB_REPOSITORY)
           echo "Repository name without owner: $REPO_NAME"
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_OUTPUT
-          
+           
+      - name: Convert PPTX to PDF and Images
+        run: |
 
-      - name: Install Poppler and Libreoffice
-        run: |
-          sudo apt-get update 
-          sudo apt-get install -y poppler-utils
-          sudo apt update 
-          sudo apt install libreoffice
+          mkdir "${{steps.get_repo_name.outputs.REPO_NAME}}"
+          
+          for ppt_file in $(cat pptx_files.txt); do
+            ppt_name=$(basename "$ppt_file" .pptx)
+            echo "This the ppt file name = $ppt_name, and path is this = $ppt_file"
+            
+            mkdir -p "$ppt_name/images"
+            
+            libreoffice --headless --convert-to pdf "$ppt_file"
 
-      - name: Convert PPT to PDF and Create Artifact
-        run: |
+            pdf_file="$ppt_name.pdf"
+            
+            pdftoppm -png "$pdf_file" "$ppt_name/images/slide"  # Convert PDF to PNG images, you can use -jpeg for JPEG images
+            
+            pdftotext "$pdf_file" "$ppt_name/$ppt_name.txt"  # Convert PDF to text file
+            
+            rm "$pdf_file"
+            mv "$ppt_name" "${{steps.get_repo_name.outputs.REPO_NAME}}"
+            
+          done < pptx_files.txt
           
-          libreoffice --headless --convert-to pdf input/content/"${{needs.get_ppt_name.outputs.ppt_name}}".pptx
+          ls -a # list the files and folder that were created
 
-          # Your commands to convert PPT to PDF using an appropriate tool (e.g., LibreOffice)
-                  
-       
-      - name: Convert PDF to Images
-        run: |
-          
-          # Create a directory to store the images
-          mkdir "${{needs.get_ppt_name.outputs.ppt_name}}"
-
-          # Convert PDF to images using pdftoppm
-          pdftoppm -png "${{needs.get_ppt_name.outputs.ppt_name}}".pdf "${{needs.get_ppt_name.outputs.ppt_name}}"/slide 
-          
-      - name: Move PDF file into dir
-        run: |
-          mv "${{needs.get_ppt_name.outputs.ppt_name}}".pdf "${{needs.get_ppt_name.outputs.ppt_name}}" || true
-          
-      - name: Verify PDF Output
-        run: |
-          # List files in the current directory to check if the PDF was generated
-          ls -a
-          
-      - name: Upload Artifact - images
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: converted-images
-          path: "${{needs.get_ppt_name.outputs.ppt_name}}"
+          name: converted-images-text
+          path: "${{steps.get_repo_name.outputs.REPO_NAME}}"
           
-
+          
       - name: Checkout Output Repository
         uses: actions/checkout@v2
         with:
           repository: kreatewebsite/kreate_output
           token: ${{ secrets.TOKEN }}
           ref: main
-        
+          
+      - name: Remove Folder
+        run: |
+          ls -a
+          folder_path="${{steps.get_repo_name.outputs.REPO_NAME}}"
+
+          if [ -d "$folder_path" ]; then
+            echo "Folder exists. Removing it and its sub-folders."
+            rm -rf "$folder_path"
+          else
+            echo "Folder does not exist."
+          fi 
+          
       - name: Download Artifacts
         uses: actions/download-artifact@v2
         with:
-          name: converted-images
-          path: "${{needs.get_ppt_name.outputs.ppt_name}}"
+          name: converted-images-text
+          path: "${{steps.get_repo_name.outputs.REPO_NAME}}"
       
-      - name: Create Username folder to store output
+          
+      - name: Checking the present files
         run: |
-          mkdir "${{steps.get_repo_name.outputs.REPO_NAME}}"
           ls -a
           
-      - name: Move image folder to Output Repository
-        run: |
-          mv "${{needs.get_ppt_name.outputs.ppt_name}}" "${{steps.get_repo_name.outputs.REPO_NAME}}"
-          ls -a
       - name: Commit and Push Image to Output Repository
         run: |
           
           git config --global user.name "Dev-98"
           git config --global user.email "devparker48@gmail.com"
           git add .
-          git commit -m "Add PDF output"
+          git commit -m "PPTX to images and text conversion done"
           git push origin main
