@@ -1,0 +1,1 @@
+Amazon SageMaker Notebook Instances are fully-managed Jupyter notebooks that can be used to run code in a variety of languages, including Python, R, and Scala. EMR Notebooks are designed for Apache Spark and it supports Spark Magic kernels, which allows you to remotely run queries and code on your EMR cluster.

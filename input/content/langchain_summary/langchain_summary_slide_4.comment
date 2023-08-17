@@ -1,0 +1,1 @@
+Prompt templates are used to specify the input and output of a chain. For example, a prompt template might specify the type of text that the LLM should generate.

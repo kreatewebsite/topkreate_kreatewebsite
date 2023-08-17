@@ -1,0 +1,1 @@
+LLMs are trained using a process called supervised learning. This involves feeding the LLM a large dataset of text and code, along with the correct output for each input. Inference is the process of using an LLM to generate output.

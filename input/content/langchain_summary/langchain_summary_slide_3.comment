@@ -1,0 +1,1 @@
+A chain is a sequence of calls to LLMs, prompt templates, and agents. A simple chain might consist of a single LLM that is used to generate text.

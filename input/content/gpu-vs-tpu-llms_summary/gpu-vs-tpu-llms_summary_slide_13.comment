@@ -1,0 +1,1 @@
+GPUs have maximum single-precision (FP32) performance of over 100 teraflops. Current-gen TPUs have about 30-60 teraf lops. This enables faster training of highly quantized models like language models.

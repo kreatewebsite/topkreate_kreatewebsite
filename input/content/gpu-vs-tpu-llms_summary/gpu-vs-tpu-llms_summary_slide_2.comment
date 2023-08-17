@@ -1,0 +1,1 @@
+GPUs are more general-purpose processors than TPUs. They are designed to handle a wide variety of tasks, including graphics processing, video processing, and machine learning. T PUs are specifically designed for machine learning tasks. They have a more streamlined architecture, which makes them more efficient at performing matrix multiplication and other tensor operations.

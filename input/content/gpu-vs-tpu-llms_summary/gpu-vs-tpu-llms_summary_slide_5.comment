@@ -1,0 +1,1 @@
+Training large language models (LLMs) requires significantly more GPU resources compared to inference. Here are some key factors to consider. Bigger models with more parameters require more GPU memory. At least 32GB per GPU is recommended, with 48GB or more being ideal.

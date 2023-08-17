@@ -1,0 +1,1 @@
+Larger models with more parameters will require more GPU memory and compute power for inference. For large models you'll generally want a high-memory (16GB+), modern, high-end GPU like an RTX 3090 or Quadro RTX. Using multiple GPUs, batching, and framework optimizations can further improve performance.

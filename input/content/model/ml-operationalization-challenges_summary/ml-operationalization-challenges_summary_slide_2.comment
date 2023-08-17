@@ -1,0 +1,1 @@
+Multiple loosely coupled pipelines exist to get data from different sources. Spark, Sci-kit learn, TensorFlow built using Python, R, Java.

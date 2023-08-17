@@ -1,0 +1,1 @@
+High-end GPUs typically have 16-32 gigabytes of onboard memory. TPUs have a customized data-parallel architecture called TensorStream. It minimizes the performance hit from communication between cores.
