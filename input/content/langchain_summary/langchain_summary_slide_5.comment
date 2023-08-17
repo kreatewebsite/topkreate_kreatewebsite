@@ -1,0 +1,1 @@
+Agents are used to make decisions about how to interact with the environment. They can be used to control the flow of a chain, or to select the appropriate LLM for a given task.

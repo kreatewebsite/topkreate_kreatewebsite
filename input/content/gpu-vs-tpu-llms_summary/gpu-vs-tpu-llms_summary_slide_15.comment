@@ -1,0 +1,1 @@
+Software tooling to leverage TPUs is not as mature which can impact performance. Frameworks like TensorFlow, PyTorch and MXNet all have GPU support.

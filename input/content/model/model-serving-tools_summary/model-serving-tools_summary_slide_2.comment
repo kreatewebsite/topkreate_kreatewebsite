@@ -1,0 +1,1 @@
+TensorFlow Serving is a flexible serving system specifically designed for serving TensorFlow models in production. PyTorch Serving (previously known as TorchServe) is a model serving library for PyTorCh models. ONNX is an open-source, high-performance inference engine that supports the Open Neural Network Exchange (ONNX) format.

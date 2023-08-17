@@ -1,0 +1,1 @@
+L-diversity is a data anonymization technique that ensures that each group of records sharing a combination of quasi-identifiers contains at least l distinct values for each sensitive attribute.

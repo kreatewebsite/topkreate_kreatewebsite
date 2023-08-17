@@ -1,0 +1,1 @@
+summarize: LLM Bot Process architecture. Process architecture: Process input, Process answer, Process refine. Process answer & refine: Chatgpt, Preprocess, Check for facts, Hallunication. Process input: Process answer; Process answer: Chgpt. Process refine: Preprocess.

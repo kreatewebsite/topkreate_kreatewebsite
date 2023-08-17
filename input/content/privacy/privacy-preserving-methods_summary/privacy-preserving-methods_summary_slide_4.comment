@@ -1,0 +1,1 @@
+Generalization algorithms work by replacing specific values with more general values. For example, a generalization algorithm might replace the value "25" with the value '20-29'Suppression works by removing sensitive values from Data.

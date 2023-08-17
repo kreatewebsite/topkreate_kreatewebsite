@@ -1,0 +1,1 @@
+Pipeline Integration testing on end to end pipeline. Reproducible ML training. Validate model quality after each retraining offline before using in production.
