@@ -34,7 +34,9 @@ jobs:
            
       - name: Convert PPTX to PDF and Images
         run: |
-          mkdir "${{steps.get_repo_name.outputs.REPO_NAME}}"
+          repo_name="${{ steps.get_repo_name.outputs.REPO_NAME }}"
+          mkdir "$repo_name"
+          
           
           for ppt_file in $(cat pptx_files.txt); do
             ppt_name=$(basename "$ppt_file" .pptx)
@@ -54,9 +56,12 @@ jobs:
                 echo "$img_name" >> "$ppt_name/$ppt_name.imagelist"
             done
             pdftotext "$pdf_file" "$ppt_name/$ppt_name.txt"  # Convert PDF to text file
+
+            # Creating a .path file, which contains path to gcp bucket imagesfolder
+            echo "https://console.cloud.google.com/storage/browser/${repo_name,,}//$ppt_name/images/" >> "$ppt_name/$ppt_name.path"
             
             rm "$pdf_file"
-            mv "$ppt_name" "${{steps.get_repo_name.outputs.REPO_NAME}}"
+            mv "$ppt_name" "$repo_name"
             
           done < pptx_files.txt
           
@@ -102,10 +107,10 @@ jobs:
           
           if gsutil ls -b gs://"$BUCKET_NAME"/; then
             echo "Bucket exists"
-            gsutil -m rsync -r "$repo_name" "gs://$BUCKET_NAME"
+            gsutil -m rsync -r "$repo_name/*" "gs://$BUCKET_NAME"
             echo "::set-output name=exists::true"
           else
             echo "Bucket does not exist"
             gsutil mb gs://"$BUCKET_NAME"/
-            gsutil -m cp -r "$repo_name" "gs://$BUCKET_NAME"
+            gsutil -m cp -r "$repo_name/*" "gs://$BUCKET_NAME"
           fi
